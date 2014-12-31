@@ -9,14 +9,7 @@ module IphoneParser
     @@parser ||= IphoneResourceFileParser.new
     ast = @@parser.parse(file_content)
     if ast
-      ast.elements.delete_if { |node| !node.kind_of? Entry }
-      ast.elements.map do |entry|
-        {
-          comments: entry.comments.text_value,
-          label: entry.label.text_value[1..-2],
-          text: entry.text.text_value[1..-2],
-        }
-      end
+      generate_hash(ast)
     else
       @@parser.failure_reason =~ /^(Expected .+) after/m
       error = "#{$1.gsub("\n", '$NEWLINE')}:" + "\n"
@@ -38,4 +31,19 @@ module IphoneParser
       out += "\"#{entry[:label]}\"=\"#{entry[:text]}\";"
     end
   end
+
+  private
+
+    def self.generate_hash(ast)
+      ast.elements.delete_if { |node| !node.kind_of? Entry }
+
+      hash_constructor = ast.elements.map do |entry|
+        label = entry.label.text_value[1..-2]
+        text = entry.text.text_value[1..-2]
+        comments = entry.comments.text_value
+        [ label, {text: text, comments: comments} ]
+      end
+
+      Hash[hash_constructor]
+    end
 end
