@@ -3,7 +3,11 @@ require 'spec_helper'
 describe IphoneParser do
   it "parse a simple entry" do
     resource_file = '"label"="text";'
-    IphoneParser.parse(resource_file)
+    entries = IphoneParser.parse(resource_file)
+    expect(entries.first[:comments]).to be_blank
+    expect(entries.first[:label]).to eq("label")
+    expect(entries.first[:text]).to eq("text")
+
   end
 
   it "parse single line comments" do
@@ -12,7 +16,10 @@ describe IphoneParser do
       "label" = "text";
     eof
 
-    IphoneParser.parse(resource_file)
+    entries = IphoneParser.parse(resource_file)
+    expect(entries.first[:comments]).to eq("// my comment\n")
+    expect(entries.first[:label]).to eq("label")
+    expect(entries.first[:text]).to eq("text")
   end
 
   it "parse multi line comments" do
@@ -20,7 +27,10 @@ describe IphoneParser do
     /* my comment */
     "label" = "text";
     eof
-    IphoneParser.parse(resource_file)
+    entries = IphoneParser.parse(resource_file)
+    expect(entries.first[:comments]).to eq("/* my comment */")
+    expect(entries.first[:label]).to eq("label")
+    expect(entries.first[:text]).to eq("text")
   end
 
   it "parse multiple strings" do
@@ -30,18 +40,26 @@ describe IphoneParser do
     /* comment 2 */
     "label 2" = "text 2";
     eof
-    IphoneParser.parse(resource_file)
+    entries = IphoneParser.parse(resource_file)
+    expect(entries.first[:comments]).to eq("// comment 1\n")
+    expect(entries.first[:label]).to eq("label 1")
+    expect(entries.first[:text]).to eq("text 1")
+    expect(entries[1][:comments]).to eq("/* comment 2 */")
+    expect(entries[1][:label]).to eq("label 2")
+    expect(entries[1][:text]).to eq("text 2")
   end
 
   it "accept escaped quotes" do
     resource_file = '"\"label\"1\"" = "\"text\"1\"";'
-    IphoneParser.parse(resource_file)
+    entries = IphoneParser.parse(resource_file)
+    expect(entries.first[:label]).to eq('\"label\"1\"')
+    expect(entries.first[:text]).to eq('\"text\"1\"')
   end
 
   it "raises for invalid format" do
     resource_file = '"invalid""="format";'
     expect {
-      IphoneParser.parse(resource_file)
+      entries = IphoneParser.parse(resource_file)
     }.to raise_error(IphoneParser::ParseError)
   end
 end

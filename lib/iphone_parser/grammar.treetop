@@ -3,12 +3,17 @@ grammar IphoneResourceFile
   rule entries
     entry+
   end
-  rule entry
-    blank comments blank label blank equal blank text blank semicolon blank
+
+  rule entry 
+    blank comments blank label blank equal blank text blank semicolon blank <IphoneParser::Entry>
   end
 
   rule comments
-    single_line_comment / multi_line_comment / ''
+    comment* / '' <IphoneParser::Comment>
+  end
+
+  rule comment
+    single_line_comment / multi_line_comment
   end
 
   rule single_line_comment
@@ -19,12 +24,8 @@ grammar IphoneResourceFile
     '/*' ( !'*/' . )* '*/'
   end
 
-  rule string
-    '"' ( '\"' / !'"' . )* '"'
-  end
-
   rule label
-    string
+    '"' ( '\"' / !'"' . )* '"' <IphoneParser::Label>
   end
 
   rule equal
@@ -32,7 +33,7 @@ grammar IphoneResourceFile
   end
 
   rule text
-    string
+    '"' ( '\"' / !'"' . )* '"' <IphoneParser::Text>
   end
 
   rule semicolon
