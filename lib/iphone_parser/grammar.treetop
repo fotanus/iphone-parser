@@ -1,0 +1,45 @@
+#grammar.treetop
+grammar IphoneResourceFile
+  rule entries
+    entry+
+  end
+  rule entry
+    blank comments blank label blank equal blank text blank semicolon blank
+  end
+
+  rule comments
+    single_line_comment / multi_line_comment / ''
+  end
+
+  rule single_line_comment
+    '//' ( ![\n] . )* [\n]
+  end
+
+  rule multi_line_comment
+    '/*' ( !'*/' . )* '*/'
+  end
+
+  rule string
+    '"' ( '\"' / !'"' . )* '"'
+  end
+
+  rule label
+    string
+  end
+
+  rule equal
+    '='
+  end
+
+  rule text
+    string
+  end
+
+  rule semicolon
+    ';' / ''
+  end
+
+  rule blank
+    [ \t\n]*
+  end
+end
