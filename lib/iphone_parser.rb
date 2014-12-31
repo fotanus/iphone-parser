@@ -25,4 +25,8 @@ module IphoneParser
       raise ParseError, error
     end
   end
+
+  def self.create_resource_file(entries)
+    entries.reduce("") { |out, entry| out += "\"#{entry[:label]}\"=\"#{entry[:text]}\";" }
+  end
 end

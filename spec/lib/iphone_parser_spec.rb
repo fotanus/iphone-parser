@@ -104,4 +104,24 @@ describe IphoneParser do
       }.to raise_error(IphoneParser::ParseError)
     end
   end
+
+  describe "IphoneParser.create_resource_file" do
+    it "creates simple file" do
+      entries = [{label: 'label', text: 'text'}]
+      expected_output = '"label"="text";'
+      expect(IphoneParser.create_resource_file(entries)).to eq(expected_output)
+    end
+
+    it "ignore comments" do
+      entries = [{comments: 'something', label: 'label', text: 'text'}]
+      expected_output = '"label"="text";'
+      expect(IphoneParser.create_resource_file(entries)).to eq(expected_output)
+    end
+
+    it "ignore comments" do
+      entries = [{comment: 'something', label: 'label', text: 'text'}]
+      expected_output = '"label"="text";'
+      expect(IphoneParser.create_resource_file(entries)).to eq(expected_output)
+    end
+  end
 end
