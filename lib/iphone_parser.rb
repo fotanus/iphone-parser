@@ -20,7 +20,7 @@ module IphoneParser
       }
     else
       @@parser.failure_reason =~ /^(Expected .+) after/m
-      error = "#{$1.gsub("\n", '$NEWLINE')}:"
+      error = "#{$1.gsub("\n", '$NEWLINE')}:" + "\n"
       error += file_content.lines.to_a[@@parser.failure_line - 1]
       error += "#{'~' * (@@parser.failure_column - 1)}^"
       raise ParseError, error
