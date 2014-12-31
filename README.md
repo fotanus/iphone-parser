@@ -1,6 +1,6 @@
 # IphoneParser
 
-TODO: Write a gem description
+Parser for iphone resource files - also can create those files.
 
 ## Installation
 
@@ -20,7 +20,13 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Check the spec folder for lots of examples. A real usage would look like this:
+
+    require 'iphone_parser'
+    strings = IphoneParser.parse(File.open("Localizable.strings").read)
+    strings['one label']
+     => { text: 'the text for this label', comment: all comments on top of this string }
+
 
 ## Contributing
 

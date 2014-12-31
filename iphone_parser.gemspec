@@ -9,9 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["fotanus@gmail.com"]
   spec.email         = ["Felipe Tanus"]
   spec.summary       = %q{Parser for iphone resource files}
-  spec.description   = %q{}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.description   = %q{Parse iphone resource files to extract strings, and create a file with the given strings}
+  spec.homepage      = "http://fotanus.com"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
@@ -21,5 +20,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_dependency "treetop", "~> 1.5.3"
+  spec.add_dependency "treetop", "~> 1.5"
 end
