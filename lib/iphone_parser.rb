@@ -6,8 +6,15 @@ module IphoneParser
   # Your code goes here...
   def self.parse(file_content)
     @@parser ||= IphoneResourceFileParser.new
-    unless @@parser.parse(file_content)
-      raise "#{@@parser.input}\n#{@@parser.failure_reason}"
+    ast = @@parser.parse(file_content)
+    if ast
+      ast
+    else
+      error = @@parser.failure_reason =~ /^(Expected .+) after/m
+      error += "#{$1.gsub("\n", '$NEWLINE')}:"
+      error += data.lines.to_a[parser.failure_line - 1]
+      error += "#{'~' * (parser.failure_column - 1)}^"
+      raise error
     end
   end
 end
