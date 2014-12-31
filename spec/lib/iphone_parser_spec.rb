@@ -56,8 +56,27 @@ describe IphoneParser do
   it "accept escaped quotes" do
     resource_file = '"\"label\"1\"" = "\"text\"1\"";'
     entries = IphoneParser.parse(resource_file)
+    expect(entries.count).to eq(1)
     expect(entries.first[:label]).to eq('\"label\"1\"')
     expect(entries.first[:text]).to eq('\"text\"1\"')
+  end
+
+  it "parses two comments for same string" do
+    resource_file = <<-eof
+      /* my comment */
+      // other comment
+      "label1" = "text1";
+      /* second comment */
+      "label2" = "text2";
+    eof
+    entries = IphoneParser.parse(resource_file)
+    expect(entries.count).to eq(2)
+    expect(entries[0][:comments]).to match(/\/\* my comment \*\/.*\/\/ other comment/m)
+    expect(entries[0][:label]).to eq('label1')
+    expect(entries[0][:text]).to eq('text1')
+    expect(entries[1][:comments]).to match(/\/\* second comment \*\//)
+    expect(entries[1][:label]).to eq('label2')
+    expect(entries[1][:text]).to eq('text2')
   end
 
   it "raises for invalid format" do

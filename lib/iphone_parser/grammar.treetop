@@ -9,7 +9,7 @@ grammar IphoneResourceFile
   end
 
   rule comments
-    comment* / '' <IphoneParser::Comment>
+    ( blank comment blank )* <IphoneParser::Comment>
   end
 
   rule comment
