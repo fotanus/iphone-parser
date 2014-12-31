@@ -96,39 +96,33 @@ describe IphoneParser do
 
   describe "IphoneParser.create_resource_file" do
     it "creates simple file" do
-      strings = [{label: 'label', text: 'text'}]
+      strings = {'label' => { text: 'text'} }
       expected_output = '"label"="text";'
       expect(IphoneParser.create_resource_file(strings)).to eq(expected_output)
     end
 
     it "ignore comments" do
-      strings = [{comments: 'something', label: 'label', text: 'text'}]
+      strings = { 'label' => {comments: 'something', text: 'text'} }
       expected_output = '"label"="text";'
       expect(IphoneParser.create_resource_file(strings)).to eq(expected_output)
-    end
-
-    it "ignore comments" do
-      strings = [{comment: 'something', label: 'label', text: 'text'}]
-      expected_output = '"label"="text";'
-      expect(IphoneParser.create_resource_file(strings)).to eq(expected_output)
-    end
-
-    it 'raises invalid entry if missing label' do
-      strings = [{text: 'text'}]
-      expect {
-        IphoneParser.create_resource_file(strings)
-      }.to raise_error(IphoneParser::InvalidEntry)
     end
 
     it 'raises invalid entry if missing text' do
-      strings = [{label: 'label'}]
+      strings = { 'label' => {} }
       expect {
         IphoneParser.create_resource_file(strings)
       }.to raise_error(IphoneParser::InvalidEntry)
     end
 
-    it 'raises invalid entry for random objects' do
-      strings = [{label: 'l', text: 't'}, Object.new]
+    it 'raises invalid entry for random objects as label' do
+      strings = {'l' => { text: 't'}, Object.new => { text: 't' } }
+      expect {
+        IphoneParser.create_resource_file(strings)
+      }.to raise_error(IphoneParser::InvalidEntry)
+    end
+
+    it 'raises invalid entry for random objects as text' do
+      strings = {'l' => { text: 't'}, 'l2' => { text: Object.new } }
       expect {
         IphoneParser.create_resource_file(strings)
       }.to raise_error(IphoneParser::InvalidEntry)
