@@ -4,6 +4,7 @@ describe IphoneParser do
   it "parse a simple entry" do
     resource_file = '"label"="text";'
     entries = IphoneParser.parse(resource_file)
+    expect(entries.count).to eq(1)
     expect(entries.first[:comments]).to be_blank
     expect(entries.first[:label]).to eq("label")
     expect(entries.first[:text]).to eq("text")
@@ -17,7 +18,8 @@ describe IphoneParser do
     eof
 
     entries = IphoneParser.parse(resource_file)
-    expect(entries.first[:comments]).to eq("// my comment\n")
+    expect(entries.count).to eq(1)
+    expect(entries.first[:comments]).to match(/\/\/ my comment\n/)
     expect(entries.first[:label]).to eq("label")
     expect(entries.first[:text]).to eq("text")
   end
@@ -28,7 +30,8 @@ describe IphoneParser do
     "label" = "text";
     eof
     entries = IphoneParser.parse(resource_file)
-    expect(entries.first[:comments]).to eq("/* my comment */")
+    expect(entries.count).to eq(1)
+    expect(entries.first[:comments]).to match(/\/\* my comment \*\//)
     expect(entries.first[:label]).to eq("label")
     expect(entries.first[:text]).to eq("text")
   end
@@ -41,10 +44,11 @@ describe IphoneParser do
     "label 2" = "text 2";
     eof
     entries = IphoneParser.parse(resource_file)
-    expect(entries.first[:comments]).to eq("// comment 1\n")
-    expect(entries.first[:label]).to eq("label 1")
-    expect(entries.first[:text]).to eq("text 1")
-    expect(entries[1][:comments]).to eq("/* comment 2 */")
+    expect(entries.count).to eq(2)
+    expect(entries[0][:comments]).to match(/\/\/ comment 1\n/)
+    expect(entries[0][:label]).to eq("label 1")
+    expect(entries[0][:text]).to eq("text 1")
+    expect(entries[1][:comments]).to match(/\/\* comment 2 \*\//)
     expect(entries[1][:label]).to eq("label 2")
     expect(entries[1][:text]).to eq("text 2")
   end
