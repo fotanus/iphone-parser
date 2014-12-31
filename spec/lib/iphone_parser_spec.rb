@@ -123,5 +123,26 @@ describe IphoneParser do
       expected_output = '"label"="text";'
       expect(IphoneParser.create_resource_file(entries)).to eq(expected_output)
     end
+
+    it 'raises invalid entry if missing label' do
+      entries = [{text: 'text'}]
+      expect {
+        IphoneParser.create_resource_file(entries)
+      }.to raise_error(IphoneParser::InvalidEntry)
+    end
+
+    it 'raises invalid entry if missing text' do
+      entries = [{label: 'label'}]
+      expect {
+        IphoneParser.create_resource_file(entries)
+      }.to raise_error(IphoneParser::InvalidEntry)
+    end
+
+    it 'raises invalid entry for random objects' do
+      entries = [{label: 'l', text: 't'}, Object.new]
+      expect {
+        IphoneParser.create_resource_file(entries)
+      }.to raise_error(IphoneParser::InvalidEntry)
+    end
   end
 end

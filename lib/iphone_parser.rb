@@ -2,7 +2,7 @@ require "treetop"
 require "iphone_parser/version"
 require 'iphone_parser/ast_nodes'
 require 'iphone_parser/grammar'
-require 'iphone_parser/parse_error'
+require 'iphone_parser/exceptions'
 
 module IphoneParser
   def self.parse(file_content)
@@ -27,6 +27,15 @@ module IphoneParser
   end
 
   def self.create_resource_file(entries)
-    entries.reduce("") { |out, entry| out += "\"#{entry[:label]}\"=\"#{entry[:text]}\";" }
+    raise InvalidEntry unless entries.kind_of? Array
+    entries.reduce("") do |out, entry|
+      unless entry.kind_of?(Hash)
+        raise InvalidEntry, "This entry is not a hash: #{entry.inspect}"
+      end
+      unless entry[:label] && entry[:text]
+        raise InvalidEntry, "Each entry should have label and text. This one does not: #{entry.inspect}"
+      end
+      out += "\"#{entry[:label]}\"=\"#{entry[:text]}\";"
+    end
   end
 end
