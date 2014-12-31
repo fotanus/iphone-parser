@@ -37,4 +37,11 @@ describe IphoneParser do
     resource_file = '"\"label\"1\"" = "\"text\"1\"";'
     IphoneParser.parse(resource_file)
   end
+
+  it "raises for invalid format" do
+    resource_file = '"invalid""="format";'
+    expect {
+      IphoneParser.parse(resource_file)
+    }.to raise_error(IphoneParser::ParseError)
+  end
 end
