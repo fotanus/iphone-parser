@@ -30,7 +30,7 @@ Check the spec folder for lots of examples. A real usage would look like this:
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/iphone_parser/fork )
+1. Fork it ( https://github.com/fotanus/iphone-parser/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
